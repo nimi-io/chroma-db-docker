@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  chromadb:
+    build: .
+    container_name: chromadb-server
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/app/data
+      - ./config:/app/config:ro
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/v1/heartbeat')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  chromadb_data:
+    driver: local
