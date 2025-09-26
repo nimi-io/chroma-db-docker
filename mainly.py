@@ -6,7 +6,6 @@ import asyncio
 
 from chromadb.config import Settings
 from chromadb.app import app as chroma_app
-from fastapi.openapi.utils import get_openapi
 
 # -----------------
 # Init main FastAPI
@@ -53,18 +52,6 @@ async def _generate_text(prompt: str, max_new_tokens: int = 128) -> str:
 async def generate_text(req: PromptRequest):
     text = await _generate_text(req.prompt, req.max_new_tokens)
     return {"response": text}
-
-
-# -----------------
-# OpenAPI / Docs Fix
-# -----------------
-@app.get("/openapi.json", include_in_schema=False)
-async def get_openapi_spec():
-    return get_openapi(
-        title="Chroma + smolLM Server",
-        version="1.0.0",
-        routes=app.routes,  # Only your routes, keeps /generate visible
-    )
 
 
 # -----------------
