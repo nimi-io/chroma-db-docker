@@ -1,5 +1,6 @@
 from chromadb.config import Settings
-from chromadb.server import main as chroma_main
+from chromadb.app import app
+import uvicorn
 
 def main():
     settings = Settings(
@@ -9,9 +10,9 @@ def main():
         anonymized_telemetry=False,
         persist_directory="/app/data"
     )
-    
-    # Start the ChromaDB server
-    chroma_main(settings)
+
+    # Start the ChromaDB server using Uvicorn
+    uvicorn.run(app, host=settings.chroma_server_host, port=settings.chroma_server_http_port)
 
 if __name__ == "__main__":
     main()
