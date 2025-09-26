@@ -25,13 +25,12 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install ChromaDB + LLM dependencies
-RUN pip install --no-cache-dir \
-    chromadb==0.4.15 \
-    requests \
-    fastapi uvicorn \
-    transformers sentencepiece accelerate \
-    torch --extra-index-url https://download.pytorch.org/whl/cpu
+# Copy requirements first for layer caching
+COPY requirements.txt .
+
+# Install deps (this layer will be cached unless requirements.txt changes)
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
 # Create data directory and give permissions
 RUN mkdir -p /app/data && chown -R chroma:chroma /app
