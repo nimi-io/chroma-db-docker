@@ -12,7 +12,7 @@ def main():
     )
 
     # Start the ChromaDB server using Uvicorn
-    uvicorn.run(app, host=settings.chroma_server_host, port=settings.chroma_server_http_port)
+    uvicorn.run(app, host=settings.chroma_server_host, port=int(settings.chroma_server_http_port))
 
 if __name__ == "__main__":
     main()
