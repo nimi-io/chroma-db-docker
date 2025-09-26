@@ -20,7 +20,7 @@ A Docker-based setup for ChromaDB, the AI-native open-source embedding database.
    curl http://localhost:8000/api/v1/heartbeat
    ```
 
-## Configuration
+## Configuration Update
 
 The ChromaDB server will be available at `http://localhost:8000`.
 
