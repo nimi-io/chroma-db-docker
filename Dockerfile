@@ -5,8 +5,10 @@ FROM python:3.11-slim
 ENV PYTHONUNBUFFERED=1
 ENV CHROMA_SERVER_HOST=0.0.0.0
 ENV CHROMA_SERVER_HTTP_PORT=8000
+ENV SMOL_SERVER_PORT=8001
 ENV ANONYMIZED_TELEMETRY=False
 ENV PERSIST_DIRECTORY=/app/data
+ENV MODEL_NAME=HuggingFaceTB/smollm-135m
 
 # Create a non-root user
 RUN groupadd -r chroma && useradd -r -g chroma chroma
@@ -20,27 +22,39 @@ RUN apt-get update && apt-get install -y \
     g++ \
     sqlite3 \
     curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install ChromaDB
-RUN pip install --no-cache-dir chromadb==0.4.15 requests
-
+# Install ChromaDB + LLM dependencies
+RUN pip install --no-cache-dir \
+    chromadb==0.4.15 \
+    requests \
+    fastapi uvicorn \
+    transformers sentencepiece accelerate \
+    torch --extra-index-url https://download.pytorch.org/whl/cpu
 
 # Create data directory and give permissions
 RUN mkdir -p /app/data && chown -R chroma:chroma /app
 
-# Copy server script
-COPY server.py /app/server.py
+# Copy server scripts
+COPY chroma_server.py /app/chroma_server.py
+COPY smol_server.py /app/smol_server.py
+COPY run_all.py /app/run_all.py
+
+# Preload smolLM so container has it cached
+RUN python -c "from transformers import AutoTokenizer, AutoModelForCausalLM; \
+    AutoTokenizer.from_pretrained('${MODEL_NAME}'); \
+    AutoModelForCausalLM.from_pretrained('${MODEL_NAME}')"
 
 # Switch to non-root user
 USER chroma
 
-# Expose port
-EXPOSE 8000
+# Expose ports
+EXPOSE 8000 8001
 
-# Health check
+# Health check (ChromaDB side)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/heartbeat', timeout=5)" || exit 1
+    CMD python healthcheck.py
 
-# Start ChromaDB server
-CMD ["python", "/app/server.py"]
+# Start both ChromaDB and smolLM servers
+CMD ["python", "/app/run_all.py"]
