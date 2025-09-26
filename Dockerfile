@@ -23,8 +23,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ChromaDB
-# RUN pip install --no-cache-dir chromadb==0.4.15 requests
-RUN pip install --no-cache-dir "chromadb[server]==1.0.20" requests
+RUN pip install --no-cache-dir chromadb==0.4.15 requests
+
 
 # Create data directory and give permissions
 RUN mkdir -p /app/data && chown -R chroma:chroma /app
