@@ -1,16 +1,16 @@
-# Use official ChromaDB server image
+# Use official ChromaDB image
 FROM ghcr.io/chroma-core/chroma:0.4.15
 
-# Set environment variables for persistence & config
+# Environment variables
 ENV CHROMA_PERSIST_DIRECTORY=/data \
     CHROMA_SERVER_CORS_ALLOW_ORIGINS='["*"]' \
     ANONYMIZED_TELEMETRY=false
 
-# Create data directory
+# Create persistence directory
 RUN mkdir -p /data
 
-# Expose ChromaDB API port
+# Expose Chroma API port
 EXPOSE 8000
 
-# Start Chroma server
-CMD ["chroma", "run", "--path", "/data", "--host", "0.0.0.0", "--port", "8000"]
+# Start Chroma with uvicorn
+CMD ["uvicorn", "chromadb.server.fastapi.app:app", "--host", "0.0.0.0", "--port", "8000"]
