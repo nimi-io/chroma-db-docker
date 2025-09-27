@@ -38,8 +38,9 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/heartbeat || exit 1
 
-# Start ChromaDB server via CLI
-CMD ["chromadb", "start", "--persist-directory", "/app/data", "--host", "0.0.0.0", "--port", "8000"]
+# Start ChromaDB server via Python module
+CMD ["python", "-m", "chromadb", "start", "--persist-directory", "/app/data", "--host", "0.0.0.0", "--port", "8000"]
+
 
 
 
