@@ -9,11 +9,8 @@ ENV CHROMA_PERSIST_DIRECTORY=/data \
 # Create data directory
 RUN mkdir -p /data
 
-# Mount Railway's persistent volume (optional if you want persistence)
-VOLUME ["/data"]
-
 # Expose ChromaDB API port
 EXPOSE 8000
 
-# Run chroma server (already ENTRYPOINT in base image, but explicit for clarity)
+# Start Chroma server
 CMD ["chroma", "run", "--path", "/data", "--host", "0.0.0.0", "--port", "8000"]
