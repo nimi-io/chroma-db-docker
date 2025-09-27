@@ -11,7 +11,7 @@ def main():
         persist_directory="/app/data"
     )
 
-    # Start the ChromaDB server using Uvicorn
+    # Serving ChromaDB server using Uvicorn
     uvicorn.run(app, host=settings.chroma_server_host, port=int(settings.chroma_server_http_port))
 
 if __name__ == "__main__":
