@@ -1,8 +1,0 @@
-chromadb==0.4.15
-requests
-fastapi
-uvicorn
-transformers
-sentencepiece
-accelerate
-torch
