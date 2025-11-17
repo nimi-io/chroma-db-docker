@@ -15,5 +15,9 @@ RUN mkdir -p /data
 # Expose Chroma API port
 EXPOSE 8000
 
-# Start Chroma with uvicorn
-CMD ["uvicorn", "chromadb.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start Chroma with extended timeouts
+CMD ["uvicorn", "chromadb.app:app",
+     "--host", "0.0.0.0",
+     "--port", "8000",
+     "--timeout-keep-alive", "600",
+     "--timeout-graceful-shutdown", "600"]
