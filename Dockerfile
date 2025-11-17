@@ -17,7 +17,7 @@ EXPOSE 8000
 
 # Start Chroma with extended timeouts
 CMD ["uvicorn", "chromadb.app:app",
-     "--host", "0.0.0.0",
-     "--port", "8000",
-     "--timeout-keep-alive", "600",
-     "--timeout-graceful-shutdown", "600"]
+    "--host", "0.0.0.0",
+    "--port", "8000",
+    "--timeout-keep-alive", "600",
+    "--timeout-graceful-shutdown", "600"]
