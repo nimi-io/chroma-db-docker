@@ -13,9 +13,9 @@ RUN mkdir -p /data && chmod 777 /data
 
 EXPOSE 8000
 
-CMD ["uvicorn", "chromadb.app:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-keep-alive", "600", "--timeout-graceful-shutdown", "600", "--log-level", "info"]
-
-
+# Initialize ChromaDB on first run, then start server
+CMD python3 -c "import chromadb; from chromadb.config import Settings; chromadb.PersistentClient(path='/data', settings=Settings(anonymized_telemetry=False))" && \
+    uvicorn chromadb.app:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 600 --timeout-graceful-shutdown 600 --log-level info
 
 
 
