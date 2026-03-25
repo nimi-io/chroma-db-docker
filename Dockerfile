@@ -7,7 +7,7 @@ ENV CHROMA_PERSIST_DIRECTORY=/data \
     CHROMA_SERVER_HTTP_PORT=8000
 
 # Install chromadb with numpy<2.0
-RUN pip install --no-cache-dir "numpy<2.0" chromadb==0.4.15 uvicorn
+RUN pip install --no-cache-dir "numpy<2.0" chromadb==0.5.23 uvicorn
 
 RUN mkdir -p /data && chmod 777 /data
 
