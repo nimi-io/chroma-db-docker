@@ -15,16 +15,10 @@ EXPOSE 8000
 
 # Initialize ChromaDB on first run, then start server
 CMD python3 -c "
-import os, shutil, chromadb
-print(f'ChromaDB version: {chromadb.__version__}')
-# Wipe stale data
-for item in os.listdir('/data'):
-    path = os.path.join('/data', item)
-    if os.path.isfile(path):
-        os.remove(path)
-    elif os.path.isdir(path):
-        shutil.rmtree(path)
-print('Data directory cleared')
+import chromadb
+from chromadb.config import Settings
+print(f'Starting ChromaDB version: {chromadb.__version__}')
+# Force fresh initialization
 client = chromadb.PersistentClient(path='/data')
 print('ChromaDB initialized successfully')
 " && \
