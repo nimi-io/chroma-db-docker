@@ -1,21 +1,13 @@
 FROM python:3.11-slim
 
-ENV CHROMA_PERSIST_DIRECTORY=/data \
-    CHROMA_SERVER_CORS_ALLOW_ORIGINS='["*"]' \
-    ANONYMIZED_TELEMETRY=False \
-    CHROMA_SERVER_HOST=0.0.0.0 \
-    CHROMA_SERVER_HTTP_PORT=8000
-
-# Install chromadb with numpy<2.0
-RUN pip install --no-cache-dir "numpy<2.0" chromadb==1.0.3 uvicorn
+RUN pip install --no-cache-dir "numpy<2.0" chromadb==1.0.3
 
 RUN mkdir -p /data && chmod 777 /data
 
 EXPOSE 8000
 
-# Initialize ChromaDB on first run, then start server
 CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
-    python3 -m chromadb.cli.cli run --host 0.0.0.0 --port 8000 --path /data --log-level info
+    chroma run --path /data --host 0.0.0.0 --port 8000 --log-level info
 
 
 # CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
