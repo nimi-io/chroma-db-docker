@@ -14,9 +14,28 @@ RUN mkdir -p /data && chmod 777 /data
 EXPOSE 8000
 
 # Initialize ChromaDB on first run, then start server
-CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
-    python3 -c "import chromadb; from chromadb.config import Settings; chromadb.PersistentClient(path='/data', settings=Settings(anonymized_telemetry=False))" && \
-    uvicorn chromadb.app:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 600 --timeout-graceful-shutdown 600 --log-level info
+CMD python3 -c "
+import os, shutil, chromadb
+print(f'ChromaDB version: {chromadb.__version__}')
+# Wipe stale data
+for item in os.listdir('/data'):
+    path = os.path.join('/data', item)
+    if os.path.isfile(path):
+        os.remove(path)
+    elif os.path.isdir(path):
+        shutil.rmtree(path)
+print('Data directory cleared')
+client = chromadb.PersistentClient(path='/data')
+print('ChromaDB initialized successfully')
+" && \
+    uvicorn chromadb.app:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 600 --log-level info
+
+
+
+
+# CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
+#     python3 -c "import chromadb; from chromadb.config import Settings; chromadb.PersistentClient(path='/data', settings=Settings(anonymized_telemetry=False))" && \
+#     uvicorn chromadb.app:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 600 --timeout-graceful-shutdown 600 --log-level info
 
 
 # CMD python3 -c "import chromadb; from chromadb.config import Settings; chromadb.PersistentClient(path='/data', settings=Settings(anonymized_telemetry=False))" && \
