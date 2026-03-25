@@ -14,10 +14,7 @@ RUN mkdir -p /data && chmod 777 /data
 EXPOSE 8000
 
 # Initialize ChromaDB on first run, then start server
-CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
-    chromadb run --path /data --host 0.0.0.0 --port 8000 --log-level info
-
-
+CMD ["--config", "/config.yaml"]
 
 
 # CMD python3 -c "import chromadb; print(f'ChromaDB version: {chromadb.__version__}')" && \
