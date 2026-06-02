@@ -8,7 +8,7 @@ ENV CHROMA_HOST_PORT=8000
 
 EXPOSE 8000
 
-CMD ["chroma", "run", "--path", "/data", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["run", "--path", "/data", "--host", "0.0.0.0", "--port", "8000"]
 
 
 
